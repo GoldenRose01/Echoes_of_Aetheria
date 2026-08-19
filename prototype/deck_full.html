@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Echoes of Aetheria - Mazzo Completo</title>
+  <style>
+    :root {
+      --ink: #f8f2e6;
+      --muted: #cdbf9f;
+      --paper: #171b21;
+      --rim: #a28353;
+      --fire: #e35c2f;
+      --water: #2d95d6;
+      --wind: #7daf75;
+      --earth: #b89453;
+      --distortion: #a774e8;
+      --node: #f0c85b;
+      --steel: #596777;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 14mm;
+      background: #10141a;
+      color: var(--ink);
+      font-family: Georgia, "Times New Roman", serif;
+    }
+
+    .toolbar {
+      margin: 0 0 10mm;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--ink);
+      font-family: Arial, sans-serif;
+    }
+
+    .toolbar h1 {
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: 0;
+    }
+
+    .toolbar button {
+      border: 1px solid #7c6a4d;
+      background: #252b34;
+      color: var(--ink);
+      border-radius: 6px;
+      padding: 9px 12px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .sheet {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, 63mm);
+      gap: 7mm;
+      align-items: start;
+    }
+
+    .card {
+      width: 63mm;
+      height: 88mm;
+      border: 1.15mm solid var(--rim);
+      border-radius: 3mm;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,0) 20mm),
+        linear-gradient(180deg, #2a3039, var(--paper));
+      padding: 3mm;
+      display: grid;
+      grid-template-rows: 13mm 35mm 1fr;
+      break-inside: avoid;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4mm 12mm rgba(0,0,0,.25);
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 1.9mm;
+      border: .35mm solid rgba(255,255,255,.14);
+      border-radius: 2mm;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .card::after {
+      content: attr(data-id);
+      position: absolute;
+      right: 3.5mm;
+      bottom: 2.5mm;
+      color: rgba(255,255,255,.35);
+      font: 700 5.5pt Arial, sans-serif;
+      z-index: 4;
+    }
+
+    .header {
+      display: grid;
+      grid-template-columns: 1fr 10mm;
+      gap: 2mm;
+      align-items: center;
+      z-index: 4;
+    }
+
+    .name {
+      font-size: 9pt;
+      line-height: 1.05;
+      font-weight: 700;
+      overflow-wrap: anywhere;
+    }
+
+    .badge {
+      width: 9mm;
+      height: 9mm;
+      border-radius: 50%;
+      border: .45mm solid rgba(255,255,255,.55);
+      display: grid;
+      place-items: center;
+      color: #11151b;
+      background: var(--accent);
+      font: 800 8pt Arial, sans-serif;
+      box-shadow: 0 0 5mm color-mix(in srgb, var(--accent) 70%, transparent);
+    }
+
+    .art {
+      margin-top: 1.5mm;
+      border: .5mm solid rgba(255,255,255,.22);
+      background: #121820;
+      min-height: 0;
+      overflow: hidden;
+      position: relative;
+      isolation: isolate;
+    }
+
+    .art img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .symbol-art {
+      width: 100%;
+      height: 100%;
+      background:
+        radial-gradient(circle at 50% 48%, color-mix(in srgb, var(--accent) 70%, white 10%), transparent 9mm),
+        radial-gradient(circle at 50% 48%, rgba(255,255,255,.18), transparent 16mm),
+        conic-gradient(from var(--spin), transparent, color-mix(in srgb, var(--accent) 75%, white 10%), transparent, color-mix(in srgb, var(--accent) 50%, black 10%), transparent),
+        linear-gradient(135deg, #10141a, #252d39);
+      display: grid;
+      place-items: center;
+    }
+
+    .sigil {
+      width: 19mm;
+      height: 19mm;
+      position: relative;
+      filter: drop-shadow(0 0 4mm var(--accent));
+    }
+
+    .sigil::before,
+    .sigil::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border: .9mm solid rgba(255,255,255,.72);
+      transform: rotate(var(--turn));
+    }
+
+    .sigil::after {
+      inset: 4mm;
+      border-color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 35%, transparent);
+      transform: rotate(calc(var(--turn) * -1));
+    }
+
+    .node .sigil::before { border-radius: 50%; }
+    .node .sigil::after { border-radius: 1mm; }
+    .distortion .sigil::before { border-radius: 2mm 50% 2mm 50%; }
+    .distortion .sigil::after { border-radius: 50% 2mm 50% 2mm; }
+    .catalyst .sigil::before { clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); }
+    .catalyst .sigil::after { clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); }
+
+    .text {
+      z-index: 4;
+      margin-top: 2mm;
+      border-top: .35mm solid rgba(255,255,255,.25);
+      padding-top: 1.7mm;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 1.3mm;
+      min-height: 0;
+    }
+
+    .meta {
+      color: var(--muted);
+      font: 700 6pt Arial, sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .effect {
+      font-size: var(--effect-size, 6.65pt);
+      line-height: 1.18;
+      overflow-wrap: anywhere;
+    }
+
+    .flavour {
+      color: #eadcc3;
+      font-size: 5.8pt;
+      line-height: 1.16;
+      font-style: italic;
+      padding-right: 9mm;
+      overflow-wrap: anywhere;
+    }
+
+    .fire { --accent: var(--fire); --rim: #b86a3b; }
+    .water { --accent: var(--water); --rim: #5282a7; }
+    .wind { --accent: var(--wind); --rim: #779a66; }
+    .earth { --accent: var(--earth); --rim: #9a7a4d; }
+    .distortion { --accent: var(--distortion); --rim: #8a68ad; }
+    .node { --accent: var(--node); --rim: #c6a44e; }
+    .universal { --accent: #d6d1f2; --rim: #b9aa73; }
+
+    @page {
+      size: A4;
+      margin: 8mm;
+    }
+
+    @media print {
+      body {
+        padding: 0;
+        background: #fff;
+      }
+
+      .toolbar { display: none; }
+
+      .sheet {
+        gap: 4mm;
+      }
+
+      .card {
+        box-shadow: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="toolbar">
+    <h1>Echoes of Aetheria - Mazzo completo</h1>
+    <button type="button" onclick="window.print()">Stampa / salva PDF</button>
+  </header>
+  <main class="sheet" id="deck"></main>
+
+  <script id="cards-data" type="text/plain">ID Carta,Nome Carta,Categoria,Elemento/Tipo,Valore Potenza,Requisiti/Effetto speciale,Flavour Text
+N01,Nodo del Fuoco Ancestrale,Nodo,Fuoco/Terra,,Richiede Fuoco 4 e Terra 2,"La montagna ricorda ogni scintilla."
+N02,Nodo delle Maree Sospese,Nodo,Acqua/Vento,,Richiede Acqua 4 e Vento 2,"Un oceano immobile attende il primo respiro."
+N03,Nodo del Bosco Magnetico,Nodo,Terra/Vento,,Richiede Terra 3 e Vento 3,"Le radici puntano verso il cielo."
+N04,Nodo della Forgia Nebulare,Nodo,Fuoco/Acqua,,Richiede Fuoco 3 e Acqua 3,"Vapore e brace battono lo stesso ritmo."
+N05,Nodo del Prisma Eterico,Nodo,Universale,,Richiede almeno 2 potenza in tre elementi diversi,"Ogni colore e un frammento di memoria."
+C01,Scintilla Risonante,Catalizzatore,Fuoco,1,Dopo averla incanalata puoi guardare la prima carta del mazzo.,"Un piccolo sole tascabile."
+C02,Braci Guidate,Catalizzatore,Fuoco,1,Se giochi questa carta su un Nodo con almeno 1 Terra pesca 1 carta poi scarta 1 carta.,"Le braci seguono sentieri invisibili."
+C03,Fiamma di Rame,Catalizzatore,Fuoco,1,Nessun effetto.,"Calore stabile, volonta precisa."
+C04,Lama Termica,Catalizzatore,Fuoco,2,Puoi spostare 1 tua potenza Fuoco da un altro Nodo a questo.,"Taglia il freddo prima della materia."
+C05,Sigillo Vulcanico,Catalizzatore,Fuoco,2,Se questo Nodo viene stabilizzato in questo turno questa carta vale +1 per la maggioranza.,"Il sigillo si chiude solo nel momento esatto."
+C06,Corona Incandescente,Catalizzatore,Fuoco,2,Nessun effetto.,"La luce sceglie il suo portatore."
+C07,Cuore di Magma,Catalizzatore,Fuoco,3,Dopo averla incanalata scarta 1 carta dalla mano.,"Potere puro, difficile da trattenere."
+C08,Goccia Memoria,Catalizzatore,Acqua,1,Dopo averla incanalata puoi riprendere in mano 1 tua carta valore 1 da un Nodo diverso.,"L'acqua non dimentica la forma."
+C09,Velo di Rugiada,Catalizzatore,Acqua,1,Nessun effetto.,"Una difesa sottile come il mattino."
+C10,Anello di Marea,Catalizzatore,Acqua,1,Se il Nodo contiene Vento questa carta vale +1 fino alla fine del turno.,"La corrente ascolta il cielo."
+C11,Canale Cristallino,Catalizzatore,Acqua,2,Pesca 1 carta se hai meno carte in mano di ogni avversario.,"Trasparente, ma mai vuoto."
+C12,Specchio Fluente,Catalizzatore,Acqua,2,Puoi copiare l'elemento di un Catalizzatore valore 1 sullo stesso Nodo fino alla stabilizzazione.,"Riflette cio che serve, non cio che e vero."
+C13,Pozza Lunare,Catalizzatore,Acqua,2,Nessun effetto.,"La luna si versa senza cadere."
+C14,Leviatano in Ampolla,Catalizzatore,Acqua,3,Dopo averla incanalata non puoi lanciare Distorsioni in questo turno.,"Un mare intero, sigillato a fatica."
+C15,Soffio Alto,Catalizzatore,Vento,1,Dopo averla incanalata puoi cambiare bersaglio a una tua prossima azione di incanalamento in questo turno.,"Arriva prima della decisione."
+C16,Piuma Eolica,Catalizzatore,Vento,1,Nessun effetto.,"Leggera non significa fragile."
+C17,Runa del Maestrale,Catalizzatore,Vento,1,Se giochi una seconda carta su questo Nodo nello stesso turno essa vale +1 per la maggioranza.,"Il vento ama le sequenze."
+C18,Spirale di Quarzo,Catalizzatore,Vento,2,Puoi scambiare questa carta con un tuo Catalizzatore valore 1 su un altro Nodo.,"Una curva che corregge il destino."
+C19,Ali di Ottone,Catalizzatore,Vento,2,Nessun effetto.,"Ingranaggi abbastanza leggeri da sognare."
+C20,Oracolo del Cielo,Catalizzatore,Vento,2,Guarda le prime 2 carte del mazzo e rimettile in qualsiasi ordine.,"Prevedere e solo ascoltare meglio."
+C21,Ciclone Imbrigliato,Catalizzatore,Vento,3,Dopo averla incanalata un avversario pesca 1 carta.,"Libero anche quando viene catturato."
+C22,Seme Litico,Catalizzatore,Terra,1,Nessun effetto.,"Da una pietra puo nascere una mappa."
+C23,Radice di Ferro,Catalizzatore,Terra,1,Questa carta non puo essere spostata da Distorsioni avversarie.,"Si aggrappa al mondo con pazienza."
+C24,Argilla Viva,Catalizzatore,Terra,1,Se il Nodo contiene Acqua questa carta vale +1 fino alla fine del turno.,"La forma arriva dopo il contatto."
+C25,Colonna Basaltica,Catalizzatore,Terra,2,Nessun effetto.,"Solida come un giuramento antico."
+C26,Geode Senziente,Catalizzatore,Terra,2,Quando viene incanalata puoi proteggere 1 altro tuo Catalizzatore su questo Nodo fino al tuo prossimo turno.,"Le pietre parlano piano."
+C27,Martello Tellurico,Catalizzatore,Terra,2,Puoi ridurre di 1 il valore di un Catalizzatore avversario su questo Nodo fino alla stabilizzazione.,"Non rompe: riequilibra."
+C28,Titano Dormiente,Catalizzatore,Terra,3,Dopo averla incanalata salta la tua prossima azione di pesca in questo turno.,"Quando si muove, la valle cambia nome."
+D01,Sovraccarico Eterico,Distorsione,Interferenza,,Scegli un Nodo: il prossimo Catalizzatore incanalato su quel Nodo in questo turno vale +1.,"Troppa energia e quasi una risposta."
+D02,Frattura di Runa,Distorsione,Interferenza,,Riduci di 1 il valore di un Catalizzatore su un Nodo fino alla stabilizzazione.,"Una linea incrinata puo deviare un destino."
+D03,Rimbalzo Arcano,Distorsione,Movimento,,Sposta un tuo Catalizzatore valore 1 o 2 da un Nodo a un altro Nodo non stabilizzato.,"Nessun incanto ama restare fermo."
+D04,Velo di Stasi,Distorsione,Difesa,,Scegli un tuo Catalizzatore: non puo essere spostato o ridotto fino al tuo prossimo turno.,"Il tempo trattiene il respiro."
+D05,Scambio di Polarita,Distorsione,Movimento,,Scambia due Catalizzatori dello stesso valore su due Nodi diversi.,"La posizione e una proprieta negoziabile."
+D06,Eco Preveggente,Distorsione,Controllo,,Guarda le prime 3 carte del mazzo; pescane 1 e rimetti le altre in fondo in qualsiasi ordine.,"Il futuro risponde a bassa voce."
+D07,Scarica di Dispersione,Distorsione,Interferenza,,Scegli un Nodo: ogni giocatore con almeno 2 Catalizzatori su quel Nodo scarta 1 carta a sua scelta da quel Nodo.,"Quando l'eco e troppo forte, il Nodo tossisce luce."
+D08,Ricalibrazione,Distorsione,Controllo,,Scegli un tuo Catalizzatore: cambia il suo elemento fino alla stabilizzazione mantenendo lo stesso valore.,"Il colore cambia, l'intenzione resta."
+D09,Ancoraggio Comune,Distorsione,Difesa,,Fino al tuo prossimo turno nessun giocatore puo stabilizzare il Nodo scelto.,"A volte salvare un Nodo significa rimandarlo."
+D10,Impulso Gemello,Distorsione,Accelerazione,,Dopo questa carta puoi incanalare immediatamente un Catalizzatore valore 1 come azione gratuita.,"Due battiti nello stesso istante."
+D11,Archivio Sommerso,Distorsione,Recupero,,"Riprendi in mano 1 Catalizzatore dalla pila degli scarti, poi scarta 1 carta.","Nulla scompare davvero sotto l'acqua."
+D12,Disallineamento Gentile,Distorsione,Controllo,,Scegli un avversario: nel suo prossimo turno la prima azione non puo essere pescare.,"Un invito cortese a improvvisare."</script>
+
+  <script>
+    const imageMap = {
+      N01: "../assets/nodo_fuoco_ancestrale.png",
+      C04: "../assets/catalizzatore_fuoco.png",
+      C12: "../assets/catalizzatore_acqua.png",
+      D01: "../assets/distorsione_sovraccarico.png"
+    };
+
+    const typeLabels = {
+      Nodo: "Nodo",
+      Catalizzatore: "Catalizzatore",
+      Distorsione: "Distorsione"
+    };
+
+    const classByElement = (card) => {
+      if (card.Categoria === "Distorsione") return "distortion";
+      if (card.Categoria === "Nodo") {
+        if (card["Elemento/Tipo"] === "Universale") return "node universal";
+        return "node " + elementToken(card["Elemento/Tipo"].split("/")[0]);
+      }
+      return "catalyst " + elementToken(card["Elemento/Tipo"]);
+    };
+
+    const elementToken = (value) => ({
+      Fuoco: "fire",
+      Acqua: "water",
+      Vento: "wind",
+      Terra: "earth",
+      Universale: "universal"
+    }[value] || "distortion");
+
+    const badge = (card) => {
+      if (card.Categoria === "Nodo") return "N";
+      if (card.Categoria === "Distorsione") return "D";
+      return card["Valore Potenza"] || "";
+    };
+
+    const parseCsv = (text) => {
+      const rows = [];
+      let row = [];
+      let value = "";
+      let inQuotes = false;
+      for (let i = 0; i < text.length; i += 1) {
+        const char = text[i];
+        const next = text[i + 1];
+        if (char === '"' && inQuotes && next === '"') {
+          value += '"';
+          i += 1;
+        } else if (char === '"') {
+          inQuotes = !inQuotes;
+        } else if (char === "," && !inQuotes) {
+          row.push(value);
+          value = "";
+        } else if ((char === "\n" || char === "\r") && !inQuotes) {
+          if (char === "\r" && next === "\n") i += 1;
+          row.push(value);
+          if (row.some(Boolean)) rows.push(row);
+          row = [];
+          value = "";
+        } else {
+          value += char;
+        }
+      }
+      if (value || row.length) {
+        row.push(value);
+        rows.push(row);
+      }
+      const headers = rows.shift();
+      return rows.map((cells) => Object.fromEntries(headers.map((header, index) => [header, cells[index] || ""])));
+    };
+
+    const escapeHtml = (value) => value
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;");
+
+    const art = (card, index) => {
+      if (imageMap[card["ID Carta"]]) {
+        return `<img src="${imageMap[card["ID Carta"]]}" alt="">`;
+      }
+      const spin = `${(index * 37) % 360}deg`;
+      const turn = `${(index * 19) % 90}deg`;
+      return `<div class="symbol-art" style="--spin:${spin};--turn:${turn}"><div class="sigil"></div></div>`;
+    };
+
+    const effectSize = (text) => {
+      if (text.length > 105) return "5.55pt";
+      if (text.length > 86) return "5.95pt";
+      return "6.65pt";
+    };
+
+    const renderCard = (card, index) => {
+      const type = typeLabels[card.Categoria];
+      const meta = `${type} - ${card["Elemento/Tipo"]}`;
+      return `
+        <article class="card ${classByElement(card)}" data-id="${escapeHtml(card["ID Carta"])}">
+          <header class="header">
+            <div class="name">${escapeHtml(card["Nome Carta"])}</div>
+            <div class="badge">${escapeHtml(badge(card))}</div>
+          </header>
+          <div class="art">${art(card, index)}</div>
+          <section class="text">
+            <div class="meta">${escapeHtml(meta)}</div>
+            <div class="effect" style="--effect-size:${effectSize(card["Requisiti/Effetto speciale"])}">${escapeHtml(card["Requisiti/Effetto speciale"])}</div>
+            <div class="flavour">${escapeHtml(card["Flavour Text"])}</div>
+          </section>
+        </article>
+      `;
+    };
+
+    const cards = parseCsv(document.getElementById("cards-data").textContent.trim());
+    document.getElementById("deck").innerHTML = cards.map(renderCard).join("");
+  </script>
+</body>
+</html>

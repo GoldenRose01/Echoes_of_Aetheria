@@ -1,0 +1,13 @@
+{
+  "nodes": "assets/cards/nodes/{id}.png",
+  "catalysts": "assets/cards/catalysts/{element}/{id}.png",
+  "distortions": "assets/cards/distortions/{id}.png",
+  "templates": {
+    "node": "assets/cards/templates/node.svg",
+    "fuoco": "assets/cards/templates/catalyst-fuoco.svg",
+    "acqua": "assets/cards/templates/catalyst-acqua.svg",
+    "vento": "assets/cards/templates/catalyst-vento.svg",
+    "terra": "assets/cards/templates/catalyst-terra.svg",
+    "distortion": "assets/cards/templates/distortion.svg"
+  }
+}

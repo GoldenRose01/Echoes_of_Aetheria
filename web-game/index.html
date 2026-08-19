@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Echoes of Aetheria - Web Game</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2311151b'/%3E%3Ccircle cx='32' cy='32' r='19' fill='%23e7c45b'/%3E%3Cpath d='M32 10 44 32 32 54 20 32Z' fill='%23242c37'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main id="app">
+    <section id="setup" class="setup-shell">
+      <div class="brand-panel">
+        <p class="eyebrow">Gioco di carte browser</p>
+        <h1>Echoes of Aetheria</h1>
+        <p class="intro">Stabilizza i Nodi eterici incanalando Catalizzatori elementali e usando Distorsioni tattiche al momento giusto.</p>
+      </div>
+
+      <form id="setup-form" class="setup-panel">
+        <div class="field-row">
+          <label for="player-count">Giocatori</label>
+          <select id="player-count" name="playerCount">
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+          </select>
+        </div>
+
+        <div id="player-configs" class="player-configs"></div>
+
+        <div class="bot-note">
+          <strong>Bot Base</strong>: sceglie mosse semplici con priorita casuali.
+          <strong>Bot Strategico</strong>: valuta Nodi vicini alla stabilizzazione, maggioranze e Distorsioni utili.
+        </div>
+
+        <div class="setup-actions">
+          <button class="primary-action" type="submit">Inizia partita</button>
+          <button id="demo-button" type="button">Demo guidata casuale</button>
+        </div>
+      </form>
+    </section>
+
+    <section id="game" class="game-shell hidden">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Partita in corso</p>
+          <h1>Echoes of Aetheria</h1>
+        </div>
+        <div class="top-actions">
+          <button id="rules-button" type="button">Regole</button>
+          <button id="new-game-button" type="button">Nuova partita</button>
+        </div>
+      </header>
+
+      <section class="status-strip">
+        <div>
+          <span class="label">Turno</span>
+          <strong id="current-player">-</strong>
+        </div>
+        <div>
+          <span class="label">Azioni</span>
+          <strong id="actions-left">-</strong>
+        </div>
+        <div>
+          <span class="label">Mazzo</span>
+          <strong id="deck-count">-</strong>
+        </div>
+        <div>
+          <span class="label">Obiettivo</span>
+          <strong id="victory-target">-</strong>
+        </div>
+      </section>
+
+      <div class="table-layout">
+        <details class="players-panel collapse-panel">
+          <summary>Giocatori</summary>
+          <div id="players" class="players-list"></div>
+        </details>
+
+        <section class="board-panel">
+          <div class="board-header">
+            <h2>Nodi</h2>
+            <div id="selection-hint" class="selection-hint">Scegli un'azione.</div>
+          </div>
+          <div id="nodes" class="nodes-grid"></div>
+        </section>
+
+        <aside class="side-panel">
+          <details class="advisor-panel collapse-panel">
+            <summary>
+              <span>Consiglio mosse</span>
+              <span id="advisor-badge">Demo</span>
+            </summary>
+            <div id="advisor" class="advisor-list"></div>
+          </details>
+          <details class="log-panel collapse-panel">
+            <summary>Registro</summary>
+            <ol id="log"></ol>
+          </details>
+        </aside>
+      </div>
+
+      <section class="hand-panel">
+        <div class="hand-header">
+          <div>
+            <h2 id="hand-title">Mano</h2>
+            <p id="hand-help">Seleziona una carta giocabile.</p>
+          </div>
+          <div class="hand-actions">
+            <button id="draw-button" type="button">Pesca</button>
+            <button id="end-turn-button" type="button">Fine turno</button>
+          </div>
+        </div>
+        <div id="hand" class="hand-grid"></div>
+      </section>
+    </section>
+
+    <dialog id="choice-dialog">
+      <form method="dialog">
+        <h2 id="choice-title">Scelta</h2>
+        <div id="choice-options" class="choice-options"></div>
+        <button value="cancel" type="submit">Annulla</button>
+      </form>
+    </dialog>
+
+    <dialog id="rules-dialog">
+      <form method="dialog">
+        <h2>Regole complete in breve</h2>
+        <p><strong>Setup.</strong> I 5 Nodi sono al centro. Ogni giocatore pesca 4 carte dal mazzo Catalizzatori + Distorsioni.</p>
+        <p><strong>Turno.</strong> Il giocatore attivo ha 2 azioni. Ogni azione puo essere: pescare 1 carta, incanalare 1 Catalizzatore su un Nodo libero, oppure lanciare 1 Distorsione.</p>
+        <p><strong>Catalizzatori.</strong> Aggiungono potenza elementale al Nodo scelto. Alcuni attivano bonus immediati, piccoli costi o protezioni.</p>
+        <p><strong>Distorsioni.</strong> Sono effetti tattici a uso singolo: spostano, proteggono, riducono, accelerano o bloccano temporaneamente un Nodo.</p>
+        <p><strong>Stabilizzazione.</strong> Un Nodo si chiude quando i suoi requisiti elementali sono raggiunti o superati. Il Prisma richiede almeno 2 potenza in tre elementi diversi.</p>
+        <p><strong>Assegnazione.</strong> Il Nodo va al giocatore con piu potenza totale su quel Nodo. In pareggio vince chi ha contribuito prima tra i giocatori in parita.</p>
+        <p><strong>Vittoria.</strong> In 2 giocatori si vince con 3 Nodi. In 3-4 giocatori si vince con 2 Nodi.</p>
+        <button value="ok" type="submit">Chiudi</button>
+      </form>
+    </dialog>
+  </main>
+  <script src="src/game.js"></script>
+</body>
+</html>

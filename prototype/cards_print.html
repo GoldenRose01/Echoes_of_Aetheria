@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Echoes of Aetheria - Prototype Cards</title>
+  <style>
+    :root {
+      --ink: #f8f3e8;
+      --muted: #c9c1b2;
+      --line: #8d7650;
+      --panel: #1f2630;
+      --fire: #e65b34;
+      --water: #3c9de0;
+      --wind: #82b870;
+      --earth: #b89556;
+      --distortion: #a86fe8;
+      --node: #f0c85b;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 18px;
+      color: var(--ink);
+      background: #11151b;
+      font-family: Georgia, "Times New Roman", serif;
+    }
+
+    .sheet {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, 63mm);
+      gap: 8mm;
+      align-items: start;
+    }
+
+    .card {
+      width: 63mm;
+      height: 88mm;
+      border: 1.2mm solid var(--line);
+      border-radius: 3mm;
+      background: linear-gradient(180deg, #29313b, #161b22);
+      padding: 3mm;
+      display: grid;
+      grid-template-rows: 12mm 39mm 1fr;
+      break-inside: avoid;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 2mm;
+      border: .35mm solid rgba(255,255,255,.12);
+      border-radius: 2mm;
+      pointer-events: none;
+    }
+
+    .header {
+      display: grid;
+      grid-template-columns: 1fr 10mm;
+      gap: 2mm;
+      align-items: center;
+      z-index: 1;
+    }
+
+    .name {
+      font-size: 9.5pt;
+      line-height: 1.05;
+      font-weight: 700;
+    }
+
+    .badge {
+      width: 9mm;
+      height: 9mm;
+      border-radius: 50%;
+      border: .45mm solid rgba(255,255,255,.5);
+      display: grid;
+      place-items: center;
+      font: 700 8pt Arial, sans-serif;
+      color: #11151b;
+      background: var(--node);
+    }
+
+    .art {
+      margin-top: 2mm;
+      border: .5mm solid rgba(255,255,255,.22);
+      background:
+        radial-gradient(circle at 50% 45%, rgba(255,255,255,.32), transparent 9mm),
+        conic-gradient(from 35deg, var(--accent), #2a3140, var(--accent), #141922);
+      display: grid;
+      place-items: center;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .art img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .text {
+      z-index: 1;
+      margin-top: 2.5mm;
+      border-top: .35mm solid rgba(255,255,255,.25);
+      padding-top: 2mm;
+      font-size: 7pt;
+      line-height: 1.22;
+      display: grid;
+      align-content: start;
+      gap: 1.5mm;
+    }
+
+    .meta {
+      color: var(--muted);
+      font: 700 6.2pt Arial, sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    .flavour {
+      color: #e8dcc9;
+      font-style: italic;
+    }
+
+    .fire { --accent: var(--fire); }
+    .water { --accent: var(--water); }
+    .wind { --accent: var(--wind); }
+    .earth { --accent: var(--earth); }
+    .distortion { --accent: var(--distortion); }
+    .node { --accent: var(--node); }
+
+    @page { size: A4; margin: 10mm; }
+
+    @media print {
+      body { background: #fff; padding: 0; }
+      .sheet { gap: 5mm; }
+      .card { box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="sheet">
+    <article class="card node">
+      <header class="header">
+        <div class="name">Nodo del Fuoco Ancestrale</div>
+        <div class="badge">N</div>
+      </header>
+      <div class="art"><img src="../assets/nodo_fuoco_ancestrale.png" alt=""></div>
+      <section class="text">
+        <div class="meta">Nodo - Fuoco/Terra</div>
+        <div>Richiede Fuoco 4 e Terra 2.</div>
+        <div class="flavour">La montagna ricorda ogni scintilla.</div>
+      </section>
+    </article>
+
+    <article class="card fire">
+      <header class="header">
+        <div class="name">Lama Termica</div>
+        <div class="badge">2</div>
+      </header>
+      <div class="art"><img src="../assets/catalizzatore_fuoco.png" alt=""></div>
+      <section class="text">
+        <div class="meta">Catalizzatore - Fuoco</div>
+        <div>Puoi spostare 1 tua potenza Fuoco da un altro Nodo a questo.</div>
+        <div class="flavour">Taglia il freddo prima della materia.</div>
+      </section>
+    </article>
+
+    <article class="card water">
+      <header class="header">
+        <div class="name">Specchio Fluente</div>
+        <div class="badge">2</div>
+      </header>
+      <div class="art"><img src="../assets/catalizzatore_acqua.png" alt=""></div>
+      <section class="text">
+        <div class="meta">Catalizzatore - Acqua</div>
+        <div>Puoi copiare l'elemento di un Catalizzatore valore 1 sullo stesso Nodo fino alla stabilizzazione.</div>
+        <div class="flavour">Riflette cio che serve, non cio che e vero.</div>
+      </section>
+    </article>
+
+    <article class="card distortion">
+      <header class="header">
+        <div class="name">Sovraccarico Eterico</div>
+        <div class="badge">D</div>
+      </header>
+      <div class="art"><img src="../assets/distorsione_sovraccarico.png" alt=""></div>
+      <section class="text">
+        <div class="meta">Distorsione - Interferenza</div>
+        <div>Scegli un Nodo: il prossimo Catalizzatore incanalato su quel Nodo in questo turno vale +1.</div>
+        <div class="flavour">Troppa energia e quasi una risposta.</div>
+      </section>
+    </article>
+  </main>
+</body>
+</html>
