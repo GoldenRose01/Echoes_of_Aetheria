@@ -1,0 +1,113 @@
+body { background: linear-gradient(#101713cf, #101713ed), url("assets/table_bg.png") center / cover fixed; }
+.view-tabs { display: flex; gap: 8px; padding: 12px 20px; border-bottom: 1px solid var(--line); background: #131a17; }
+.view-tabs [aria-current="page"] { border-color: var(--node); color: var(--node); }
+button:focus-visible, [role="button"]:focus-visible, summary:focus-visible { outline: 3px solid #f2d579; outline-offset: 3px; }
+.setup-shell { min-height: auto; max-width: 1100px; margin: auto; padding-top: 40px; }
+.brand-panel h1 { font-size: 48px; }
+.game-shell { max-width: 1800px; margin: auto; }
+.topbar h1 { font-size: 26px; }
+.table-layout, .board-panel { background: transparent; border: 0; box-shadow: none; padding: 0; }
+.board-panel { min-height: 0; overflow: visible; }
+.node-card { min-height: 360px; grid-template-rows: 150px auto auto 1fr auto; }
+.node-card .card-head { padding: 0; }
+.contributions { max-height: 160px; min-height: 70px; }
+.status-strip > div { padding: 9px 12px; background: #18251fe8; }
+.hand-panel { background: #141e19f2; }
+.hand-header { flex-wrap: wrap; }
+.hand-grid { gap: 12px; padding: 20px 8px; align-items: stretch; }
+.hand-card { width: 190px; flex-basis: 190px; height: 350px; margin-left: 0; transform: none; grid-template-rows: 54px 132px minmax(65px,1fr) auto; }
+.hand-card:hover, .hand-card.selected { transform: translateY(-6px); }
+.hand-card .effect { overflow: auto; font-size: 12px; line-height: 1.35; }
+.hand-card .flavour { display: none; }
+.hand-actions button { min-height: 44px; }
+#end-turn-button { border-color: var(--node); }
+.players-panel { display: block; }
+.players-list { display: grid; grid-template-columns: repeat(auto-fit,minmax(160px,1fr)); gap: 8px; }
+#rules-view { max-width: 900px; margin: auto; padding: 28px 20px; line-height: 1.65; }
+#rules-view h1 { font-size: 32px; }
+#rules-view h2 { margin-top: 28px; font-size: 22px; }
+#rules-view details { border-bottom: 1px solid var(--line); padding: 12px 0; }
+#rules-view summary { cursor: pointer; font-weight: bold; }
+#rules-view details p { color: var(--muted); margin: 12px 0; }
+@media(max-width: 1000px) { .nodes-grid { grid-template-columns: repeat(3,minmax(0,1fr)); } }
+@media(max-width: 600px) {
+  .game-shell { padding: 12px; }
+  .brand-panel h1 { font-size: 36px; }
+  .nodes-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .node-card { padding: 34px 7px; grid-template-rows: 110px auto auto 1fr auto; }
+  .status-strip { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .side-panel { grid-template-columns: 1fr; }
+  .top-actions { flex-wrap: wrap; }
+  .hand-actions { grid-template-columns: 1fr 1fr; width: 100%; }
+  .hand-card { flex-basis: 180px; }
+}
+@media(prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+/* The table and hand share the available viewport, independently of content. */
+body:has(#game:not(.hidden)):not(:has(#rules-view:not(.hidden))) { overflow: hidden; }
+.view-tabs { height: 48px; padding: 5px 12px; }
+.game-shell {
+  height: calc(100dvh - 48px); padding: 8px 12px;
+  display: grid; grid-template-rows: 36px 48px minmax(0,1fr) minmax(160px,32%);
+  gap: 8px; overflow: hidden;
+}
+.topbar, .status-strip { margin: 0; }
+.topbar { display: flex; gap: 8px; }
+.topbar .eyebrow { display: none; }
+.topbar h1 { font-size: 22px; margin: 0; }
+.top-actions button { padding: 6px 10px; }
+.status-strip { grid-template-columns: repeat(4,minmax(0,1fr)); gap: 6px; }
+.status-strip > div { padding: 5px 8px; min-width: 0; }
+.status-strip strong { font-size: 13px; overflow-wrap: anywhere; }
+.label { font-size: 10px; margin-bottom: 2px; }
+.table-layout { min-height: 0; position: relative; display: block; padding-bottom: 34px; }
+.board-panel { height: 100%; display: grid; grid-template-rows: 26px minmax(0,1fr); }
+.board-header { display: flex; align-items: center; }
+.board-header h2 { margin: 0; font-size: 15px; }
+.selection-hint { font-size: 12px; }
+.nodes-grid { min-height: 0; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 8px; padding: 3px; }
+.node-card { min-height: 0; padding: 28px 6px; gap: 4px; grid-template-rows: minmax(35px,1fr) auto auto minmax(0,.6fr); }
+.node-card .flavour { display: none; }
+.node-card .card-title { font-size: 13px; }
+.node-card .card-type { font-size: 10px; }
+.requirements { padding: 0; gap: 3px; }
+.element-pill { font-size: 10px; padding: 2px 5px; }
+.contributions { min-height: 0; max-height: none; padding: 3px; }
+.mini-card { font-size: 10px; padding: 3px; }
+.players-panel, .side-panel { position: absolute; bottom: 0; padding: 0; z-index: 10; }
+.players-panel { left: 0; width: 30%; }
+.side-panel { right: 0; width: 68%; display: grid; grid-template-columns: 1fr 1fr; align-items: end; }
+.collapse-panel { background: #17221f; }
+.collapse-panel summary { min-height: 28px; padding: 3px 8px; font-size: 12px; }
+.collapse-panel summary::after { width: 19px; height: 19px; }
+.collapse-panel[open] { max-height: min(350px,55dvh); overflow: auto; }
+.hand-panel { min-height: 0; margin: 0; padding: 6px 10px; display: grid; grid-template-rows: 40px minmax(0,1fr); }
+.hand-header { display: flex; flex-wrap: nowrap; gap: 8px; }
+.hand-header h2 { font-size: 15px; margin: 0; }
+#hand-help { font-size: 11px; margin: 2px 0; }
+.hand-actions { width: auto; grid-template-columns: auto auto; flex-shrink: 0; }
+.hand-actions button { min-height: 34px; padding: 6px 10px; }
+.hand-grid { min-height: 0; padding: 6px 3px; gap: 7px; overflow: auto; }
+.hand-card { min-width: 0; width: auto; flex: 1 0 110px; max-width: 200px; height: 100%; padding: 5px; gap: 3px; grid-template-rows: 34px minmax(20px,1fr) minmax(24px,.65fr) 12px; }
+.hand-card .card-title { font-size: 12px; }
+.hand-card .card-type { font-size: 9px; }
+.hand-card .orb { width: 24px; height: 24px; flex-basis: 24px; }
+.hand-card .effect { font-size: 10px; line-height: 1.2; }
+.hand-card:hover, .hand-card.selected { transform: none; }
+.hand-privacy { min-height: 0; padding: 8px; gap: 5px; }
+.hand-privacy .privacy-mark { display: none; }
+.hand-privacy p { font-size: 12px; }
+@media(max-width:600px) {
+  .game-shell { padding: 5px; gap: 5px; grid-template-rows: 32px 48px minmax(0,1fr) minmax(155px,30%); }
+  .topbar h1 { font-size: 16px; }
+  .top-actions button { font-size: 10px; padding: 5px; }
+  .nodes-grid { grid-template-columns: repeat(3,minmax(0,1fr)); grid-template-rows: repeat(2,minmax(0,1fr)); gap: 5px; }
+  .node-card { padding: 25px 4px; grid-template-rows: minmax(20px,1fr) auto auto minmax(20px,.5fr); }
+  .node-card .card-title { font-size: 10px; }
+  .node-card .contributions { font-size: 9px; }
+  .node-card .card-type { font-size: 9px; }
+  .board-header h2 { display: none; }
+  .hand-panel { padding: 4px; }
+  .hand-card { flex-basis: 100px; }
+  .collapse-panel summary { font-size: 10px; }
+}
