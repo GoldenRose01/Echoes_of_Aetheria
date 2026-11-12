@@ -39,3 +39,34 @@ const accessibleCards = () => document.querySelectorAll(".hand-card[onclick], .n
 });
 new MutationObserver(accessibleCards).observe(document.getElementById("game"), { childList: true, subtree: true });
 accessibleCards();
+
+const searchLabel = document.createElement("label");
+searchLabel.textContent = "Cerca una carta o un effetto";
+const searchInput = document.createElement("input");
+searchInput.type = "search";
+searchInput.placeholder = "Nome, elemento, effetto...";
+searchLabel.append(searchInput);
+content.querySelectorAll("h2")[1].after(searchLabel);
+searchInput.addEventListener("input", () => {
+  const query = searchInput.value.trim().toLocaleLowerCase("it");
+  content.querySelectorAll("details").forEach(detail => {
+    detail.hidden = !detail.textContent.toLocaleLowerCase("it").includes(query);
+  });
+});
+
+const coverHand = document.createElement("button");
+coverHand.type = "button";
+coverHand.textContent = "Copri mano";
+document.querySelector(".hand-actions").prepend(coverHand);
+coverHand.addEventListener("click", () => {
+  if (!state || currentPlayer().type !== "human") return;
+  currentPlayer().handRevealed = false;
+  selectedCardId = null;
+  waitingForNode = null;
+  render();
+});
+function updateCoverButton() {
+  coverHand.hidden = !state || currentPlayer().type !== "human" || !currentPlayer().handRevealed;
+}
+new MutationObserver(updateCoverButton).observe(document.getElementById("hand"), { childList: true });
+updateCoverButton();

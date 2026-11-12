@@ -866,8 +866,8 @@ function renderHand() {
 
 function cardImagePath(card) {
   const id = card.id.toLowerCase();
-  if (card.category === "Distorsione") return `assets/cards/distortions/${id}.png`;
-  return `assets/cards/catalysts/${card.element.toLowerCase()}/${id}.png`;
+  if (card.category === "Distorsione") return `assets/cards/distortions/${id}.webp`;
+  return `assets/cards/catalysts/${card.element.toLowerCase()}/${id}.webp`;
 }
 
 function cardTemplatePath(card) {
@@ -876,7 +876,7 @@ function cardTemplatePath(card) {
 }
 
 function nodeImagePath(node) {
-  return `assets/cards/nodes/${node.id.toLowerCase()}.png`;
+  return `assets/cards/nodes/${node.id.toLowerCase()}.webp`;
 }
 
 function nodeTemplatePath() {
